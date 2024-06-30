@@ -55,6 +55,9 @@
 
 uint16_t adcValue[4] = {0,};
 
+uint8_t btn_r_flag = 0;
+uint8_t btn_l_flag = 0;
+
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -87,6 +90,16 @@ const osThreadAttr_t task3_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+    if(GPIO_Pin == GPIO_PIN_14){
+        btn_l_flag = 1;
+    }
+    else if(GPIO_Pin == GPIO_PIN_10){
+        btn_r_flag = 1;
+    }
+    return;
+}
 
 PUTCHAR_PROTOTYPE{
     HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
@@ -180,9 +193,20 @@ void thread1(void *argument)
 {
   /* USER CODE BEGIN thread1 */
   /* Infinite loop */
+  uint8_t btn_temp;
   for(;;)
-  { // left_x, left_y, right_y, right_x
-    printf("%d,%d,%d,%d\n", adcValue[0], adcValue[1], adcValue[2], adcValue[3]);
+  { 
+    btn_temp = 0;
+    if (btn_l_flag == 1){
+        btn_temp += 1;
+        btn_l_flag = 0;
+    }
+    if (btn_r_flag == 1){
+        btn_temp += 2;
+        btn_r_flag = 0;
+    }
+    // left_x, left_y, right_y, right_x, btn_l:1, btn_r:2 btn_l+btn_r:3
+    printf("%d,%d,%d,%d,%d\n", adcValue[0], adcValue[1], adcValue[2], adcValue[3], btn_temp);
     osDelay(20);
   }
   /* USER CODE END thread1 */
@@ -221,7 +245,7 @@ void thread3(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(500);
   }
   /* USER CODE END thread3 */
 }

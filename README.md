@@ -5,6 +5,7 @@
 ## STM32F411CEU6 BlackPill 보드를 이용한 RC Car controller
 ### 1. 기능
 - ADC로 조이스틱 위치를 판단
+- 조이스틱의 버튼으로 자동모드, 수동모드 전환
 - 블루투스로 RC Car에 데이터 전송 [`RC_CAR_Joystick`](https://github.com/HeadlessJohn/RC_CAR_JOYSTICK)
 ### 2. 사용한 부품
 - 아날로그 조이스틱
